@@ -1,2 +1,3 @@
-# front_test_guide
-front_test_guide
+# Guia para desenvolvimento de testes Front-end web
+
+## Sumário
