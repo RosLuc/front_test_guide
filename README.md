@@ -134,7 +134,7 @@ describe('Login Page', () => {
 		// Preencher campo de senha
 		cy.get('input[name="password"]').type('password');
 		
-		// Acionar butão de login
+		// Acionar botão de login
 		cy.get('button[type="submit"]').click();
 		
 		// Validar se o login foi efetuado com sucesso
@@ -145,9 +145,11 @@ describe('Login Page', () => {
 
 ### 3.3 Configurar ambiente
 
+Neste tópico serão abordadas as configurações das ferramentas com foco no ambiente Linux; entretanto, os comandos também funcionam no CMD do Windows.
+
 ### Configuração do Jest
 
-Sempre é recomendado seguir as orientações fornecidas na documentação oficial para garantir que sua configuração esteja correta e aproveite ao máximo as funcionalidades da ferramenta. Para obter detalhes completos sobre a configuração e os recursos do Jest, consulte a [documentação oficial do Jest](https://jestjs.io/pt-BR/docs/getting-started).
+Sempre é recomendado seguir as orientações fornecidas na documentação oficial para garantir que sua configuração esteja correta e aproveitar ao máximo as funcionalidades da ferramenta. Para obter detalhes completos sobre a configuração e os recursos do Jest, consulte a [documentação oficial do Jest](https://jestjs.io/pt-BR/docs/getting-started).
 
 #### Passos para Configuração
 
