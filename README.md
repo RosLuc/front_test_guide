@@ -1,6 +1,26 @@
 # Guia para desenvolvimento de testes Front-end web
 
 ## Sumário
+1. [Introdução ao Guia](#1-introdução-ao-guia)
+2. [Tipos de Testes](#2-tipos-de-testes)
+   - [Testes Unitários](#21-testes-unitários)
+   - [Testes de Integração](#22-testes-de-integração)
+   - [Testes Funcionais](#23-testes-funcionais)
+   - [Testes de Interface do Usuário](#24-testes-de-interface-do-usuário-ui)
+   - [Testes de Performance](#25-testes-de-performance)
+   - [Testes de Segurança](#26-testes-de-segurança)
+
+3. [Configuração do Ambiente de Testes](#3-configuração-do-ambiente-de-testes)
+	- [Aplicação Alvo](#31-aplicação-alvo)
+	- [Ferramentas para Teste](#32-ferramentas-para-teste)
+	- [Configurar ambiente](#33-configurar-ambiente)
+
+4. [Boas Práticas em Testes](#4-boas-práticas-em-testes)
+5. [Exemplos de Testes](#5-exemplos-de-testes)
+   - [Testes Unitários](#51-testes-unitários)
+   - [Testes de Integração](#52-testes-de-integração)
+   - [Testes Funcionais](#53-testes-funcionais)
+6. [Depuração e Manutenção de Testes](#6-depuração-e-manutenção-de-testes)
 
 ## 1. Introdução ao Guia
 
@@ -23,21 +43,23 @@ Este guia é projetado tanto para desenvolvedores iniciantes quanto para aqueles
 
 ## 2. Tipos de Testes
 
+Nesta seção, abordaremos os principais tipos de testes utilizados no desenvolvimento de front-end web, essenciais para garantir a qualidade e a confiabilidade da aplicação.
+
 ### 2.1 Testes Unitários
  
 Testes unitários são projetados para verificar a funcionalidade de pequenas unidades de código, como funções ou métodos, de forma isolada. O objetivo é garantir que cada unidade opere conforme o esperado, sem dependências externas. Esses testes ajudam a identificar rapidamente problemas em partes específicas do código e facilitam a manutenção do software.
 
 ### 2.2 Testes de Integração
  
-Testes de integração avaliam a interação entre diferentes módulos ou componentes da aplicação. Eles garantem que as partes do sistema funcionem bem juntas e que as interfaces entre esses módulos estejam corretas. Esses testes são essenciais para verificar se os dados fluem corretamente entre componentes e se a aplicação como um todo se comporta de acordo com os requisitos.
+Testes de integração avaliam a interação entre diferentes módulos ou componentes da aplicação. Eles garantem que as partes do sistema funcionem bem juntas e que as interfaces entre esses módulos estejam corretas. Esses testes são essenciais para verificar se os dados fluem adequadamente entre componentes e se a aplicação como um todo se comporta de acordo com os requisitos.
 
 ### 2.3 Testes Funcionais
  
-Testes funcionais focam em verificar se as funcionalidades da aplicação atendem aos requisitos especificados. Eles testam a aplicação do ponto de vista do usuário final, garantindo que os fluxos de trabalho e as funcionalidades sejam executados corretamente. Esses testes são importantes para validar que a aplicação realiza as tarefas que os usuários esperam.
+Testes funcionais focam em verificar se as funcionalidades da aplicação atendem aos requisitos especificados. Eles testam a aplicação do ponto de vista do usuário final, garantindo que os fluxos de trabalho e as funcionalidades sejam executados adequadamente. Esses testes são importantes para validar que a aplicação realiza as tarefas que os usuários esperam.
 
-### 2.4 Testes de Interface do Usuário (UI)
+### 2.4 Testes de Interface do Usuário
  
-Testes de interface do usuário (UI) verificam se os elementos visuais da aplicação são exibidos corretamente e se as interações do usuário funcionam como esperado. Eles asseguram que a interface seja amigável e intuitiva, e que os elementos gráficos estejam corretos e bem posicionados. Esses testes ajudam a garantir uma boa experiência de usuário.
+Testes de User Interface (UI) verificam se os elementos visuais da aplicação são exibidos adequadamente e se as interações do usuário funcionam como esperado. Eles asseguram que a interface seja amigável e intuitiva, e que os elementos gráficos estejam corretos e bem posicionados. Esses testes ajudam a garantir uma boa experiência de usuário.
 
 ### 2.5 Testes de Performance
  
@@ -57,9 +79,9 @@ Para a elaboração dos testes, foi criada uma aplicação específica que servi
 
 A aplicação em questão é desenvolvida utilizando o framework Next.js e se comunica com uma API REST. Para fins de demonstração e aprendizado, vamos utilizar o fluxo de listagem de busca como nosso laboratório de testes. Esse fluxo será o foco principal para apresentar exemplos práticos e boas práticas de testes em desenvolvimento web.
 
-### 3.2 Ferramentas para Teste
+## 3.2 Ferramentas para Teste
 
-A realização de testes eficazes em uma aplicação web é crucial para garantir que ela funcione corretamente e ofereça uma experiência de usuário de alta qualidade. Para facilitar a criação e execução de testes, existem diversas ferramentas disponíveis que ajudam a automatizar e gerenciar esse processo. Neste guia, abordaremos duas das ferramentas mais populares no desenvolvimento front-end: Jest e Cypress.
+A realização de testes eficazes em uma aplicação web é crucial para garantir que ela funcione adequadamente e ofereça uma experiência de usuário de alta qualidade. Para facilitar a criação e execução de testes, existem diversas ferramentas disponíveis que ajudam a automatizar e gerenciar esse processo. Neste guia, abordaremos duas das ferramentas mais populares no desenvolvimento front-end: Jest e Cypress.
 
 ### Jest
 
@@ -112,7 +134,7 @@ describe('Login Page', () => {
 		// Preencher campo de senha
 		cy.get('input[name="password"]').type('password');
 		
-		// Acionar butão de login
+		// Acionar botão de login
 		cy.get('button[type="submit"]').click();
 		
 		// Validar se o login foi efetuado com sucesso
@@ -123,9 +145,11 @@ describe('Login Page', () => {
 
 ### 3.3 Configurar ambiente
 
+Neste tópico serão abordadas as configurações das ferramentas com foco no ambiente Linux; entretanto, os comandos também funcionam no CMD do Windows.
+
 ### Configuração do Jest
 
-Sempre é recomendado seguir as orientações fornecidas na documentação oficial para garantir que sua configuração esteja correta e aproveite ao máximo as funcionalidades da ferramenta. Para obter detalhes completos sobre a configuração e os recursos do Jest, consulte a [documentação oficial do Jest](https://jestjs.io/pt-BR/docs/getting-started).
+Sempre é recomendado seguir as orientações fornecidas na documentação oficial para garantir que sua configuração esteja correta e aproveitar ao máximo as funcionalidades da ferramenta. Para obter detalhes completos sobre a configuração e os recursos do Jest, consulte a [documentação oficial do Jest](https://jestjs.io/pt-BR/docs/getting-started).
 
 #### Passos para Configuração
 
@@ -245,4 +269,3 @@ Para obter instruções detalhadas sobre como configurar o Cypress e entender se
 	```bash
 	npx cypress run
 	```
-
