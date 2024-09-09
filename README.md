@@ -6,7 +6,7 @@
    - [Testes Unitários](#21-testes-unitários)
    - [Testes de Integração](#22-testes-de-integração)
    - [Testes Funcionais](#23-testes-funcionais)
-   - [Testes de Interface do Usuário (UI)](#24-testes-de-interface-do-usuário-ui)
+   - [Testes de Interface do Usuário](#24-testes-de-interface-do-usuário-ui)
    - [Testes de Performance](#25-testes-de-performance)
    - [Testes de Segurança](#26-testes-de-segurança)
 
@@ -57,9 +57,9 @@ Testes de integração avaliam a interação entre diferentes módulos ou compon
  
 Testes funcionais focam em verificar se as funcionalidades da aplicação atendem aos requisitos especificados. Eles testam a aplicação do ponto de vista do usuário final, garantindo que os fluxos de trabalho e as funcionalidades sejam executados adequadamente. Esses testes são importantes para validar que a aplicação realiza as tarefas que os usuários esperam.
 
-### 2.4 Testes de Interface do Usuário (UI)
+### 2.4 Testes de Interface do Usuário
  
-Testes de interface do usuário (UI) verificam se os elementos visuais da aplicação são exibidos adequadamente e se as interações do usuário funcionam como esperado. Eles asseguram que a interface seja amigável e intuitiva, e que os elementos gráficos estejam corretos e bem posicionados. Esses testes ajudam a garantir uma boa experiência de usuário.
+Testes de User Interface (UI) verificam se os elementos visuais da aplicação são exibidos adequadamente e se as interações do usuário funcionam como esperado. Eles asseguram que a interface seja amigável e intuitiva, e que os elementos gráficos estejam corretos e bem posicionados. Esses testes ajudam a garantir uma boa experiência de usuário.
 
 ### 2.5 Testes de Performance
  
