@@ -404,3 +404,182 @@ describe('mountQuery', () => {
 
 ```
 
+### 5.2 Testes de Integração
+
+Dado o seguinte componente do sistema, iremos construir seus teste Utilizando a biblioteca do Jest.
+
+```Typescript
+
+import styles from "./styles.module.css";
+import { formatPrice } from "@/utils/format-price";
+
+interface ProductCardProps {
+	image: string;
+	title: string;
+	price: number;
+}
+
+export function ProductCard(props: ProductCardProps) {  
+
+	const price = formatPrice(props.price);
+
+	return (
+		<div className={styles.card}>
+			<img src={props.image} />
+			<div>
+				<h3>{props.title}</h3>
+				<div></div>
+				<p>{price}</p>
+			</div>
+		</div>
+	);
+}
+
+```
+
+Esse teste foi desenvolvido para garantir que o componente `ProductCard` renderize corretamente os detalhes do produto. Por se tratar de um componente e ser mais complexo do que uma função utilitária, detalharemos os principais passos envolvidos na criação deste teste:
+
+Primeiramente uremos usar as seguinte dependências para realizar os testes:
+
+```Typescript
+
+import { render, screen } from '@testing-library/react';
+import { formatPrice } from '@/utils/format-price';
+import { ProductCard } from '../index';
+
+```
+
+Aqui, você está importando funções e componentes necessários para o teste:
+
+* `render` e `screen` do @testing-library/react são usados para renderizar o componente e acessar elementos no DOM renderizado.
+* `formatPrice` é a função utilitária que formata o preço.
+* `ProductCard` é o componente que você está testando.
+
+Por termos uma dependência interna para o `formatPrice`, iremos definir um mock para que não afete nosso teste, utilizando o metodo `jest.mock` teremos  a essa definição.
+
+```Typescript
+
+jest.mock('../../../utils/format-price', () => ({
+  formatPrice: jest.fn((price) => `$${price.toFixed(2)}`),
+}));
+
+```
+
+Dado que estamos trabalhando com um componente HTML, precisamos renderizar seus elementos, para isso iremos usar o metodo `render` que irá "renderiazar" nosso componente, contruindo uma DOM virtual.
+
+```Typescript
+
+render(<ProductCard {...props} />);
+
+```
+
+**Dado que já temos uma "renderização" do componente, o que iremos validar com nossos testes?**
+
+Iremos verificar se temos os elementos foram construidos no componente de forma correta. Para isso, iremos buscar os elementos do componente por meio de seus texto esperados e tags HTML utilizadas.
+
+```Typescript
+
+const image = screen.getByRole('img');
+const title = screen.getByText(props.title);
+const price = screen.getByText(formatPrice(props.price));
+
+```
+
+Por fim, dado os elementos buscado é aplicar metodos do Jest para validar suas integridades.
+
+```Typescript
+
+expect(image).toHaveProperty('src', props.image);
+expect(title).not.toBeNull();
+expect(price).not.toBeNull();
+
+```
+
+Código completo do teste:
+
+```Typescript
+
+import { render, screen } from '@testing-library/react';
+import { formatPrice } from '@/utils/format-price';
+import { ProductCard } from '../index';
+
+jest.mock('../../../utils/format-price', () => ({
+    formatPrice: jest.fn((price) => `$${price.toFixed(2)}`),
+}));
+
+describe('ProductCardProps', () => {
+
+    it('should render product details correctly', () => {
+
+        const props = {
+            image: 'https://example.com/image.jpg',
+            title: 'Test Product',
+            price: 19.99,
+        };
+
+        render(<ProductCard {...props} />);
+
+        const image = screen.getByRole('img');
+        const title = screen.getByText(props.title);
+        const price = screen.getByText(formatPrice(props.price));
+
+        expect(image).toHaveProperty('src', props.image);
+        expect(title).not.toBeNull();
+        expect(price).not.toBeNull();
+    });
+});
+
+```
+
+Como outro exemplo de teste temos de um componente que utilizado com componente testado anteriormente e  conseguimos validar sua integração com o componente `ProductsList`, utlizando dos mesmo conceitos levantado anteriormente mas sem aplicar um *mock* do componente filho.
+
+```Typescript
+
+import { render, screen } from '@testing-library/react';
+import { ProductsList } from '../index';
+import { useJobs } from '../../../hooks/useJob';
+
+jest.mock('../../../hooks/useJob', () => ({
+	useJobs: jest.fn()
+}));
+
+describe('ProductsList', () => {
+
+	it('renders products and handles loading state', async () => {
+
+		const mockData = [
+			{ id: 1, name: 'Product 1', price: 100 },
+			{ id: 2, name: 'Product 2', price: 200 },
+		];
+
+		(useJobs as jest.Mock).mockReturnValue({
+			data: mockData,
+			isPending: false,
+		});
+
+		render(<ProductsList />);
+
+		expect(screen.getByText('Product 1')).not.toBeNull();
+		expect(screen.getByText('Product 2')).not.toBeNull();
+		expect(screen.getByText('R$ 1,00')).not.toBeNull();
+		expect(screen.getByText('R$ 2,00')).not.toBeNull();
+	});
+
+	it('shows loading state while pending', () => {
+
+		(useJobs as jest.Mock).mockReturnValue({
+			data: [],
+			isPending: true,
+		});
+
+		render(<ProductsList />);
+
+		expect(screen.queryByText('Product 1')).toBeNull();
+		expect(screen.queryByText('Product 2')).toBeNull();
+	});
+});
+
+
+````
+
+
