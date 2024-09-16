@@ -19,8 +19,7 @@
 5. [Exemplos de Testes](#5-exemplos-de-testes)
    - [Testes Unitários](#51-testes-unitários)
    - [Testes de Integração](#52-testes-de-integração)
-   - [Testes Funcionais](#53-testes-funcionais)
-6. [Depuração e Manutenção de Testes](#6-depuração-e-manutenção-de-testes)
+   - [Testes E2E](#53-testes-e2e)
 
 ## 1. Introdução ao Guia
 
@@ -269,3 +268,139 @@ Para obter instruções detalhadas sobre como configurar o Cypress e entender se
 	```bash
 	npx cypress run
 	```
+
+## 4. Boas Práticas em Testes
+
+1. **Escreva testes pequenos e focados**
+Os testes devem abranger pequenas unidades de código, como funções e componentes, de forma isolada. Isso facilita a identificação de falhas, tornando a depuração mais eficiente e simplificando a manutenção dos testes. A independência dos testes também ajuda a detectar problemas rapidamente em futuras atualizações ou refatorações.
+
+2. **Siga a pirâmide de testes**
+Utilize a pirâmide de testes como referência, priorizando os testes unitários, seguidos pelos testes de integração e, por último, os testes end-to-end. Essa estratégia assegura uma cobertura eficiente com menor custo de manutenção.
+
+3. **Evite dependências externas**
+Sempre evitar trabalhar com dependências externa em seus teste, utlize de *mocks* para simular esstas dependências e trate sempre como seu funcionamento esperado. 
+
+4. **Teste o que importa**
+Teste o comportamento do sistema, e não as implementações internas. Se um componente ou função for refatorado sem mudar sua funcionalidade, os testes não devem falhar. Isso garante que os testes validem o resultado final, não os detalhes de como ele é alcançado.
+
+5. **Escreva testes legíveis**
+Os testes devem ser fáceis de entender por outras pessoas, assim como o código principal deve seguir as práticas de *clean code*. Testes também são código e, portanto, precisam aderir a boas práticas de legibilidade e organização. É importante lembrar que a manutenção de um sistema inclui tanto o código da aplicação quanto seus testes, garantindo que ambos sejam claros e fáceis de manter ao longo do tempo.
+
+6. **Garanta cobertura de código adequada**
+Embora a cobertura de 100% não seja sempre o objetivo, é importante garantir que os cenários críticos e as funcionalidades principais sejam testados.
+
+7. **Mantenha os testes atualizados**
+Sempre que o código for atualizado, os testes também devem ser revisados. Manter testes obsoletos ou irrelevantes pode comprometer a qualidade geral do sistema. Certifique-se de que os testes acompanhem as mudanças no código, garantindo sua relevância e eficácia na detecção de possíveis falhas.
+
+## 5. Exemplos de Testes
+
+Neste topico será abordado testes na aplicação front-end.
+
+### 5.1 Testes Unitários
+
+Para iniciar os testes unitários, é necessário definir o que é uma unidade em seu projeto. Considerando que nossa aplicação alvo é um front-end em Next.js, podemos definir como unidades as funções utilitárias, que geralmente são utilizadas para manipular dados na aplicação, além dos hooks e contexts.
+
+Em nossa aplicação alvo, o Me Contrata, temos as seguintes funções utilitarias no modulo de listagem de serviços.
+
+```typescript
+import { FilterType } from "@/types/filter-types";
+import { PriorityTypes } from "@/types/priority-types";
+
+export function getCategoryByType(type: FilterType) {
+
+  switch (type) {
+    case FilterType.PROGRAMMING:
+      return 'PROGRAMMING';
+    case FilterType.DESIGN:
+      return 'DESIGN';
+    default:
+      return "";
+  }
+}
+
+export function getFieldByPriority(priority: PriorityTypes) {
+
+  switch (priority) {
+
+    case PriorityTypes.NEWS:
+      return { field: "created_at", order: "ASC" };
+    case PriorityTypes.BIGGEST_PRICE:
+      return { field: "price", order: "DESC" };
+    case PriorityTypes.MINOR_PRICE:
+      return { field: "price", order: "ASC" };
+    default:
+      return { field: "created_at", order: "ASC" };
+  }
+}
+
+export function mountQuery(type: FilterType, priority: PriorityTypes) {
+
+  const category = getCategoryByType(type);
+  const field = getFieldByPriority(priority);
+
+  return `?category=${category}&orderBy=${field.field}&order=${field.order}`;
+};
+```
+
+Em geral, temos funções responsáveis pelo tratamento de Query Params de uma requisição, que envolvem várias condições e manipulação de strings. Por serem funções simples, sem a necessidade de renderizar conteúdos HTML da aplicação, o uso do Jest para implementar os testes é uma boa solução.
+
+Para manter o projeto organizado, é recomendado criar um pasta 'specs' no dirétoruio de utilitarios, e como foi configurado no jest, ele irá monitorar esses arquivos.
+
+Para função `getCategoryByType`, pode-se ver que temos uma condicional `switch`, o que implica ter casos de texte para cada `case` no codigo. Entretando no Jest podemos utilizar de funções especificas para não haver a necessida de criar varios testes que fazem a mesma preparação para os casos de teste.
+
+```typescript
+describe('getCategoryByType', () => {
+
+	it.each([
+		{ title: 'ALL', input: FilterType.ALL, expected: '' },
+		{ title: 'PROGRAMMING', input: FilterType.PROGRAMMING, expected: 'PROGRAMMING' },
+		{ title: 'DESIGN', input: FilterType.DESIGN, expected: 'DESIGN' },
+	])('returns the correct category for $title filter type', ({ input, expected }) => {
+
+		const result = getCategoryByType(input);
+		expect(result).toEqual(expected);
+	});
+});
+```
+
+Para começar os teste no Jest aplicamos o `describe`, onde iremos definir a unidade a ser testado, no nosso caso, o `getCategoryByType`, uma das funções utilitaria da aplicação, onde é responsavel por preparar uma parte da *query* para consultar os serviços ofertados pela plataforma.
+
+Como pode ser visto na função, temos vários pontos com fluxos condicionais, e para cada um desses pontos será necessário um caso de teste para cobrir completamente a função. Porém, por se tratar de uma função simples, não será necessário definir várias implementações de casos de teste, pois o código seria semelhante, com diferenças apenas nas entradas e saídas dos testes. 
+
+Dado isso, o Jest disponibiliza o método `each`, que, simplificadamente, pode ser visto como uma estrutura de laço, onde são definidos parâmetros que serão passados para a `callback` dos testes em cada iteração especificada. Tendo em vista nossa função `getCategoryByType` precisariamos realizar três casos, dois para cada `case` do `switch` e um para o `default`.
+
+Por se tratar de uma função simples, o teste pode ser escrito de forma concisa, utilizando o método `expect` em conjunto com `toEqual`. Dessa forma, definimos que "esperamos que o resultado da função seja igual a um valor esperado" para aquele caso de teste.
+
+Para as demais funções desse mesmo arquivo, seguimos uma abordagem semelhante, sempre definindo testes simples, mas que possam cobrir de forma eficaz as funções utilitárias.
+
+```typescript
+
+describe('getFieldByPriority', () => {
+
+	it.each([
+		{ title: 'BIGGEST_PRICE', input: PriorityTypes.BIGGEST_PRICE, expected: { field: "price", order: "DESC" } },
+		{ title: 'MINOR_PRICE', input: PriorityTypes.MINOR_PRICE, expected: { field: "price", order: "ASC" } },
+		{ title: 'NEWS', input: PriorityTypes.NEWS, expected: { field: "created_at", order: "ASC" } },
+		{ title: 'DEFAULT', input: 'DEFAULT', expected: { field: "created_at", order: "ASC" } },
+	])('returns the correct category for $title filter type', ({ input, expected }) => {
+
+		const result = getFieldByPriority(input as PriorityTypes);
+		expect(result).toEqual(expected);
+	});
+});
+
+describe('mountQuery', () => {
+
+	it('returns the correct category for $title filter type', () => {
+
+		const typeInput = FilterType.PROGRAMMING;
+		const priorityInput = PriorityTypes.BIGGEST_PRICE;
+		const result = mountQuery(typeInput, priorityInput);
+		const expected = '?category=PROGRAMMING&orderBy=price&order=DESC';
+
+		expect(result).toEqual(expected);
+	});
+});
+
+```
+
