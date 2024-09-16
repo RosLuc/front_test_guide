@@ -579,7 +579,80 @@ describe('ProductsList', () => {
 	});
 });
 
+```
 
-````
+### 5.3 Testes E2E
 
+1. Descrição do Teste (describe)
 
+```Typescript
+describe('ProductsList Component', () => {
+  // Codigo do teste
+});
+```
+
+`describe`: Bloco que agrupa um conjunto de testes relacionados. Aqui, estamos descrevendo o teste para o componente ProductsList.
+
+2. Configuração Inicial (beforeEach)
+
+```Typescript
+beforeEach(() => {
+  cy.intercept('GET', 'http://localhost:3001/job?category=&orderBy=created_at&order=ASC', {
+    statusCode: 200,
+    body: [
+      { id: 1, name: 'Product 1', price: 100 },
+      { id: 2, name: 'Product 2', price: 200 },
+    ],
+  }).as('getJobs');
+
+  cy.visit('http://localhost:3000/jobs');
+});
+```
+
+`cy.intercept`: Intercepta a solicitação de rede para GET http://localhost:3001/job e simula uma resposta com um status 200 e um corpo específico. Isso permite que você teste o componente com dados conhecidos, sem depender do servidor real.
+
+`.as('getJobs')`: Dá um alias à interceptação para que possa ser referenciada mais tarde nos testes.
+
+`cy.visit`: Navega para a URL onde o componente ProductsList está renderizado. Isso configura o ambiente de teste.
+
+3. Teste 1: Verificar a Lista de Produtos
+
+```Typescript
+it('should display a list of products', () => {
+  cy.wait('@getJobs');
+
+  cy.get('[class*="list_container"]').should('exist');
+
+  cy.get('[class*="card"]').should('have.length', 2);
+  cy.contains('Product 1').should('be.visible');
+  cy.contains('Product 2').should('be.visible');
+});
+```
+
+`cy.wait('@getJobs')`: Aguarda a interceptação da solicitação @getJobs ser concluída para garantir que a resposta simulada foi recebida.
+
+`cy.get('[class*="list_container"]')`: Seleciona o elemento que contém a classe que inclui list_container e verifica se ele existe na página.
+
+`cy.get('[class*="card"]')`: Seleciona todos os elementos cuja classe inclui card e verifica se há exatamente 2 desses elementos.
+
+`cy.contains('Product 1')` e `cy.contains('Product 2')`: Verifica se os textos 'Product 1' e 'Product 2' estão visíveis na página.
+
+4. Teste 2: Verificar a Imagem de Placeholder
+
+```Typescript
+it('should show a placeholder image for products', () => {
+  cy.wait('@getJobs');
+
+  cy.get('[class*="card"] img')
+    .should('have.attr', 'src')
+    .and('include', 'https://via.placeholder.com/150');
+});
+```
+
+`cy.wait('@getJobs')`: Aguarda novamente a interceptação da solicitação @getJobs ser concluída.
+
+`cy.get('[class*="card"] img')`: Seleciona as imagens dentro dos elementos cuja classe inclui card.
+
+`.should('have.attr', 'src')`: Verifica se a imagem tem o atributo src.
+
+`.and('include', 'https://via.placeholder.com/150')`: Verifica se o valor do atributo src inclui a URL da imagem de placeholder fornecida.
