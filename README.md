@@ -277,8 +277,10 @@ Os testes devem abranger pequenas unidades de código, como funções e componen
 2. **Siga a pirâmide de testes**
 Utilize a pirâmide de testes como referência, priorizando os testes unitários, seguidos pelos testes de integração e, por último, os testes end-to-end. Essa estratégia assegura uma cobertura eficiente com menor custo de manutenção.
 
+![Pirâmide](img/pi.png)
+
 3. **Evite dependências externas**
-Sempre evitar trabalhar com dependências externa em seus teste, utlize de *mocks* para simular esstas dependências e trate sempre como seu funcionamento esperado. 
+Sempre evitar trabalhar com dependências externas em seus testes, utlize de *mocks* para simular estas dependências e trate sempre como seu funcionamento esperado. 
 
 4. **Teste o que importa**
 Teste o comportamento do sistema, e não as implementações internas. Se um componente ou função for refatorado sem mudar sua funcionalidade, os testes não devem falhar. Isso garante que os testes validem o resultado final, não os detalhes de como ele é alcançado.
@@ -294,13 +296,13 @@ Sempre que o código for atualizado, os testes também devem ser revisados. Mant
 
 ## 5. Exemplos de Testes
 
-Neste topico será abordado testes na aplicação front-end.
+Neste topico, será abordado testes na aplicação front-end.
 
 ### 5.1 Testes Unitários
 
 Para iniciar os testes unitários, é necessário definir o que é uma unidade em seu projeto. Considerando que nossa aplicação alvo é um front-end em Next.js, podemos definir como unidades as funções utilitárias, que geralmente são utilizadas para manipular dados na aplicação, além dos hooks e contexts.
 
-Em nossa aplicação alvo, o Me Contrata, temos as seguintes funções utilitarias no modulo de listagem de serviços.
+Em nossa aplicação alvo, o Me Contrata, temos as seguintes funções utilitárias no módulo de listagem de serviços.
 
 ```typescript
 import { FilterType } from "@/types/filter-types";
@@ -344,9 +346,9 @@ export function mountQuery(type: FilterType, priority: PriorityTypes) {
 
 Em geral, temos funções responsáveis pelo tratamento de Query Params de uma requisição, que envolvem várias condições e manipulação de strings. Por serem funções simples, sem a necessidade de renderizar conteúdos HTML da aplicação, o uso do Jest para implementar os testes é uma boa solução.
 
-Para manter o projeto organizado, é recomendado criar um pasta 'specs' no dirétoruio de utilitarios, e como foi configurado no jest, ele irá monitorar esses arquivos.
+Para manter o projeto organizado, é recomendado criar um pasta 'specs' no diretório de utilitarios, e como foi configurado no jest, ele irá monitorar esses arquivos.
 
-Para função `getCategoryByType`, pode-se ver que temos uma condicional `switch`, o que implica ter casos de texte para cada `case` no codigo. Entretando no Jest podemos utilizar de funções especificas para não haver a necessida de criar varios testes que fazem a mesma preparação para os casos de teste.
+Para a função `getCategoryByType`, pode-se ver que temos uma condicional switch, o que implica ter casos de teste para cada `case` no código. Entretanto, no Jest podemos utilizar de funções especificas para não haver a necessidade de criar vários testes que fazem a mesma preparação para os casos de teste.
 
 ```typescript
 describe('getCategoryByType', () => {
@@ -363,11 +365,11 @@ describe('getCategoryByType', () => {
 });
 ```
 
-Para começar os teste no Jest aplicamos o `describe`, onde iremos definir a unidade a ser testado, no nosso caso, o `getCategoryByType`, uma das funções utilitaria da aplicação, onde é responsavel por preparar uma parte da *query* para consultar os serviços ofertados pela plataforma.
+Para começar os testes no Jest aplicamos o `describe`, no qual iremos definir a unidade a ser testada, no nosso caso, o `getCategoryByType`, uma das funções utilitarias da aplicação, a qual é responsavel por preparar uma parte da *query* para consultar os serviços ofertados pela plataforma.
 
 Como pode ser visto na função, temos vários pontos com fluxos condicionais, e para cada um desses pontos será necessário um caso de teste para cobrir completamente a função. Porém, por se tratar de uma função simples, não será necessário definir várias implementações de casos de teste, pois o código seria semelhante, com diferenças apenas nas entradas e saídas dos testes. 
 
-Dado isso, o Jest disponibiliza o método `each`, que, simplificadamente, pode ser visto como uma estrutura de laço, onde são definidos parâmetros que serão passados para a `callback` dos testes em cada iteração especificada. Tendo em vista nossa função `getCategoryByType` precisariamos realizar três casos, dois para cada `case` do `switch` e um para o `default`.
+Dado isso, o Jest disponibiliza o método `each`, que, simplificadamente, pode ser visto como uma estrutura de laço, onde são definidos parâmetros que serão passados para a `callback` dos testes em cada iteração especificada. Tendo em vista nossa função `getCategoryByType`, precisariamos realizar três casos, dois para cada `case` do `switch` e um para o `default`.
 
 Por se tratar de uma função simples, o teste pode ser escrito de forma concisa, utilizando o método `expect` em conjunto com `toEqual`. Dessa forma, definimos que "esperamos que o resultado da função seja igual a um valor esperado" para aquele caso de teste.
 
@@ -406,7 +408,7 @@ describe('mountQuery', () => {
 
 ### 5.2 Testes de Integração
 
-Dado o seguinte componente do sistema, iremos construir seus teste Utilizando a biblioteca do Jest.
+Dado o seguinte componente do sistema, iremos construir seus teste utilizando a biblioteca do Jest.
 
 ```Typescript
 
@@ -439,7 +441,7 @@ export function ProductCard(props: ProductCardProps) {
 
 Esse teste foi desenvolvido para garantir que o componente `ProductCard` renderize corretamente os detalhes do produto. Por se tratar de um componente e ser mais complexo do que uma função utilitária, detalharemos os principais passos envolvidos na criação deste teste:
 
-Primeiramente uremos usar as seguinte dependências para realizar os testes:
+Primeiramente uremos usar as seguintes dependências para realizar os testes:
 
 ```Typescript
 
@@ -455,7 +457,7 @@ Aqui, você está importando funções e componentes necessários para o teste:
 * `formatPrice` é a função utilitária que formata o preço.
 * `ProductCard` é o componente que você está testando.
 
-Por termos uma dependência interna para o `formatPrice`, iremos definir um mock para que não afete nosso teste, utilizando o metodo `jest.mock` teremos  a essa definição.
+Por termos uma dependência interna para o `formatPrice`, iremos definir um mock para que não afete nosso teste, utilizando o método `jest.mock` teremos acesso a essa definição.
 
 ```Typescript
 
@@ -465,7 +467,7 @@ jest.mock('../../../utils/format-price', () => ({
 
 ```
 
-Dado que estamos trabalhando com um componente HTML, precisamos renderizar seus elementos, para isso iremos usar o metodo `render` que irá "renderiazar" nosso componente, contruindo uma DOM virtual.
+Dado que estamos trabalhando com um componente HTML, precisamos renderizar seus elementos, para isso iremos usar o método `render` que irá "renderiazar" nosso componente, contruindo uma DOM virtual.
 
 ```Typescript
 
@@ -475,7 +477,7 @@ render(<ProductCard {...props} />);
 
 **Dado que já temos uma "renderização" do componente, o que iremos validar com nossos testes?**
 
-Iremos verificar se temos os elementos foram construidos no componente de forma correta. Para isso, iremos buscar os elementos do componente por meio de seus texto esperados e tags HTML utilizadas.
+Iremos verificar se temos os elementos que foram construídos no componente de forma correta. Para isso, iremos buscar os elementos do componente por meio de seus textos esperados e tags HTML utilizadas.
 
 ```Typescript
 
@@ -485,7 +487,7 @@ const price = screen.getByText(formatPrice(props.price));
 
 ```
 
-Por fim, dado os elementos buscado é aplicar metodos do Jest para validar suas integridades.
+Por fim, dado os elementos buscados é aplicar métodos do Jest para validar suas integridades.
 
 ```Typescript
 
@@ -531,7 +533,7 @@ describe('ProductCardProps', () => {
 
 ```
 
-Como outro exemplo de teste temos de um componente que utilizado com componente testado anteriormente e  conseguimos validar sua integração com o componente `ProductsList`, utlizando dos mesmo conceitos levantado anteriormente mas sem aplicar um *mock* do componente filho.
+Como outro exemplo de teste, temos o de um componente que é utilizado com o componente testado anteriormente e conseguimos validar sua integração com o componente `ProductsList`, utilizando dos mesmos conceitos levantados anteriormente, mas sem aplicar um mock do componente filho.
 
 ```Typescript
 
