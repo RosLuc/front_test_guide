@@ -1,7 +1,7 @@
 # Guia para desenvolvimento de testes Front-end web
 
 ## Sumário
-1. [Introdução ao Guia](#1-introdução-ao-guia)
+1. [Introdução ao Guia](/README.md#1-introdução-ao-guia)
 2. [Tipos de Testes](/types.md#2-tipos-de-testes)
    - [Testes Unitários](/types.md#21-testes-unitários)
    - [Testes de Integração](/types.md#22-testes-de-integração)
@@ -99,7 +99,7 @@ Neste tópico serão abordadas as configurações das ferramentas com foco no am
 
 ### Configuração do Jest
 
-Sempre é recomendado seguir as orientações fornecidas na documentação oficial para garantir que sua configuração esteja correta e aproveitar ao máximo as funcionalidades da ferramenta. Para obter detalhes completos sobre a configuração e os recursos do Jest, consulte a [documentação oficial do Jest](https://jestjs.io/pt-BR/docs/getting-started).
+Sempre é recomendado seguir as orientações fornecidas na documentação oficial para garantir que sua configuração esteja correta e aproveitar ao máximo as funcionalidades da ferramenta. Para obter detalhes completos sobre a configuração e os recursos do Jest, consulte a [documentação oficial do Next para uso do Jest](https://nextjs.org/docs/app/building-your-application/testing/jest).
 
 #### Passos para Configuração
 
@@ -108,7 +108,7 @@ Sempre é recomendado seguir as orientações fornecidas na documentação ofici
    Primeiro, adicione o Jest como uma dependência de desenvolvimento no seu projeto. Execute o seguinte comando no terminal:
 
    ```bash
-   npm install --save-dev jest
+   npm install -D jest jest-environment-jsdom @testing-library/react @testing-library/jest-dom
    ```
 
 2. **Gere o Arquivo de Configuração**
@@ -130,10 +130,23 @@ Sempre é recomendado seguir as orientações fornecidas na documentação ofici
 	3. Atualize a configuração `testMatch` para incluir os seguintes padrões:
 
 	```javascript
-	testMatch: [
-		"**/__tests__/**/*.[jt]s?(x)",
-		"**/?(*.)+(spec|test).[tj]s?(x)"
-	]
+		import type { Config } from 'jest'
+		import nextJest from 'next/jest.js'
+		
+		const createJestConfig = nextJest({
+			dir: './',
+		});
+		
+		const config: Config = {
+			coverageProvider: 'v8',
+			testEnvironment: 'jsdom',
+			testMatch: [
+				"**/__tests__/**/*.[jt]s?(x)",
+				"**/?(*.)+(spec|test).[tj]s?(x)"
+			]
+		}
+
+		export default createJestConfig(config)
 	```
 
 	A configuração testMatch define quais arquivos devem ser considerados como arquivos de teste pelo Jest. Com essa configuração, o Jest buscará arquivos que correspondam aos padrões .spec.ts e .test.ts dentro dos diretórios __tests__ e em outros locais do projeto. Isso permite que você crie arquivos de teste com a extensão .spec.ts e o Jest os reconhecerá automaticamente durante a execução dos testes.

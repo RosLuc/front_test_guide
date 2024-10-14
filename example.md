@@ -1,7 +1,7 @@
 # Guia para desenvolvimento de testes Front-end web
 
 ## Sumário
-1. [Introdução ao Guia](#1-introdução-ao-guia)
+1. [Introdução ao Guia](/README.md#1-introdução-ao-guia)
 2. [Tipos de Testes](/types.md#2-tipos-de-testes)
    - [Testes Unitários](/types.md#21-testes-unitários)
    - [Testes de Integração](/types.md#22-testes-de-integração)
